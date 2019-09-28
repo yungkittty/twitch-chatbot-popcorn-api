@@ -1,0 +1,7 @@
+{
+  "author": "yungkittty",
+  "name": "twitch-chatbot-popcorn-api",
+  "version": "0.9.0-alpha",
+  "main": "index.js",
+  "scripts": {}
+}

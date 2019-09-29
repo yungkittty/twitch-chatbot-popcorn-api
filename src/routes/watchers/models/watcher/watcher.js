@@ -4,7 +4,6 @@ const { fork } = require("child_process");
 class Watcher {
   constructor(watcherId, watcherCreds) {
     this.id = watcherId;
-
     this.worker = fork("./src/routes/watchers/models/watcher/worker.js");
     this.workerStatus = false;
     this.workerMessages = [];

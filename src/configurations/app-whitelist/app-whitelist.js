@@ -1,5 +1,4 @@
 const appWhitelist = {
-  // eslint-disable-line
   "98fc6143-0107-41e9-ab31-f3994c8bd431": {
     username: "yungkittty",
     password: "oauth:kzoe5lem2qsgv0s9i41ulsdwqrzkv6"

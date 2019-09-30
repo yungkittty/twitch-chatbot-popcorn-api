@@ -11,11 +11,15 @@ const postWatcher = (request, response) => {
   if (!appDatabase.users[userId])
     // eslint-disable-line
     return response.status(404).end();
-  const watcherId = appDatabase.users[userId].watcherId || uuid();
-  const watcherCreds = appDatabase.users[userId].credentials;
-  if (!appDatabase.watchers[watcherId])
-    // eslint-disable-line
-    appDatabase.watchers[watcherId] = new Watcher(watcherId, watcherCreds);
+  const user = appDatabase.users[userId];
+  const watcherId = user.watcherId || uuid();
+  const watcherCreds = user.credentials;
+  if (!appDatabase.watchers[watcherId]) {
+    appDatabase.watchers[watcherId] =
+      // eslint-disable-line
+      new Watcher(watcherId, watcherCreds);
+    user.watcherId = watcherId;
+  }
   return response.status(200).json({ watcherId });
 };
 

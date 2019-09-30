@@ -52,6 +52,7 @@ process.on("message", ({ type, payload = {} }) => {
       workerClient.on("connected", onWorkerClientConnected);
       workerClient.on("message", onWorkerClientMessage);
       console.log("[INFO] Worker is initialising!");
+      return;
     case "worker-start":
       workerClient.connect();
       workerEmitter = setInterval(() => {
@@ -61,7 +62,7 @@ process.on("message", ({ type, payload = {} }) => {
       console.log("[INFO] Worker is starting!");
       return;
     case "worker-stop":
-      workerClient.close();
+      workerClient.disconnect();
       clearInterval(workerEmitter);
       console.log("[INFO] Worker is stopping!");
       return;

@@ -1,3 +1,3 @@
-const Watcher = require("./watcher");
+const Message = require("./message");
 
-module.exports = Watcher;
+module.exports = Message;

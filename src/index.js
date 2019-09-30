@@ -6,15 +6,15 @@ app.use(express.json());
 
 const { postWatcher, patchWatcher } = require("./routes/watchers");
 
-app.post("/api/watchers", postWatcher);
+app.post("/api/watchers/:userId", postWatcher);
 
-// app.delete("/api/watchers/:watcher_id");
+app.patch("/api/watchers/:watcherId", patchWatcher);
 
-// app.patch("/api/watchers/:watcher_id", patchWatcher);
+// app.get("/api/watchers/:watcherId/messages");
 
-// app.get("/api/watchers/:watch_id/messages");
+// app.delete("/api/watchers/:watcherId/messages");
 
-// app.delete("/api/watchers/:watch_id/messages");
+// app.delete("/api/watchers/:watcherId");
 
 const appServerPort = 8080;
 

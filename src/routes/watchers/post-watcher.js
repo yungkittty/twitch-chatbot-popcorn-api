@@ -1,26 +1,22 @@
 const _ = require("lodash");
+const uuid = require("uuid/v4");
 const Watcher = require("./models/watcher");
-const appWhitelist = require("../../configurations/app-whitelist");
 const appDatabase = require("../../configurations/app-database");
 
 const postWatcher = (request, response) => {
-  const { whitelistId = "" } = request.body;
-  const isWhitelistedId =
+  const { userId = "" } = request.params || {};
+  if (!userId || typeof userId !== "string")
     // eslint-disable-line
-    _.chain(appWhitelist)
-      .keys()
-      .includes(whitelistId)
-      .value();
-  if (!isWhitelistedId)
+    return response.status(400).end();
+  if (!appDatabase.users[userId])
     // eslint-disable-line
-    return response.status(401).end();
-  const watcherId = whitelistId;
-  const watcherCreds = appWhitelist[whitelistId];
-  appDatabase.watchers[watcherId] =
+    return response.status(404).end();
+  const watcherId = appDatabase.users[userId].watcherId || uuid();
+  const watcherCreds = appDatabase.users[userId].credentials;
+  if (!appDatabase.watchers[watcherId])
     // eslint-disable-line
-    new Watcher(watcherId, watcherCreds);
-  const responseJson = { whitelistId };
-  return response.status(200).json(responseJson);
+    appDatabase.watchers[watcherId] = new Watcher(watcherId, watcherCreds);
+  return response.status(200).json({ watcherId });
 };
 
 module.exports = postWatcher;

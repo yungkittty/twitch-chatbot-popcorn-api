@@ -20,6 +20,6 @@ const { deleteMessages } = require("./routes/watchers/routes/messages");
 
 app.delete("/api/watchers/:watcherId/messages", deleteMessages);
 
-const appServerPort = 8080;
+const appServerPort = process.env.PORT || 8080;
 
 app.listen(appServerPort, () => console.log(`[INFO] Server is listening on http://localhost:${appServerPort}!`));

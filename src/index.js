@@ -10,11 +10,15 @@ app.post("/api/watchers/:userId", postWatcher);
 
 app.patch("/api/watchers/:watcherId", patchWatcher);
 
-// app.get("/api/watchers/:watcherId/messages");
-
-// app.delete("/api/watchers/:watcherId/messages");
-
 // app.delete("/api/watchers/:watcherId");
+
+const { getMetrics } = require("./routes/watchers/routes/metrics");
+
+app.get("/api/watchers/:watcherId/metrics", getMetrics);
+
+// const { deleteMessages } = require("./routes/watchers/routes/messages");
+
+// app.delete("/api/watchers/:watcherId/messages", deleteMessages);
 
 const appServerPort = 8080;
 

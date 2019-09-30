@@ -5,7 +5,7 @@ const appDatabase = require("../../configurations/app-database");
 
 const postWatcher = (request, response) => {
   const { userId = "" } = request.params || {};
-  if (!userId || typeof userId !== "string")
+  if (!userId)
     // eslint-disable-line
     return response.status(400).end();
   if (!appDatabase.users[userId])

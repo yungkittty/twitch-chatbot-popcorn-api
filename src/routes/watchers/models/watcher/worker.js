@@ -2,7 +2,7 @@ const _ = require("lodash");
 const tmi = require("tmi.js");
 const Message = require("../../models/message");
 
-const WORKER_TICK_RATE = 2500;
+const WORKER_TICK_RATE = 500;
 
 let workerClient = undefined;
 
@@ -45,7 +45,7 @@ const onWorkerClientMessage = (
   console.log(`[INFO] workerMessagesQueue = ${JSON.stringify(workerMessagesQueue)}.`);
 };
 
-process.on("message", ({ type, payload = {} }) => {
+process.on("message", ({ type, payload }) => {
   switch (type) {
     case "worker-init":
       workerClient = new tmi.client({ identity: payload, channels: [payload.username] });
@@ -58,12 +58,14 @@ process.on("message", ({ type, payload = {} }) => {
       workerEmitter = setInterval(() => {
         process.send({ payload: workerMessagesQueue });
         workerMessagesQueue = [];
+        console.log("[INFO] Worker is flushing!");
       }, WORKER_TICK_RATE);
       console.log("[INFO] Worker is starting!");
       return;
     case "worker-stop":
       workerClient.disconnect();
       clearInterval(workerEmitter);
+      workerMessagesQueue = [];
       console.log("[INFO] Worker is stopping!");
       return;
   }

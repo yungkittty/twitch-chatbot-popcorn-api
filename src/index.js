@@ -16,9 +16,9 @@ const { getMetrics } = require("./routes/watchers/routes/metrics");
 
 app.get("/api/watchers/:watcherId/metrics", getMetrics);
 
-// const { deleteMessages } = require("./routes/watchers/routes/messages");
+const { deleteMessages } = require("./routes/watchers/routes/messages");
 
-// app.delete("/api/watchers/:watcherId/messages", deleteMessages);
+app.delete("/api/watchers/:watcherId/messages", deleteMessages);
 
 const appServerPort = 8080;
 

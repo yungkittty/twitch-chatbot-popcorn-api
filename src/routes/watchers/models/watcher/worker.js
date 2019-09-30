@@ -56,6 +56,7 @@ process.on("message", ({ type, payload }) => {
     case "worker-start":
       workerClient.connect();
       workerEmitter = setInterval(() => {
+        if (!workerMessagesQueue.length) return;
         process.send({ payload: workerMessagesQueue });
         workerMessagesQueue = [];
         console.log("[INFO] Worker is flushing!");

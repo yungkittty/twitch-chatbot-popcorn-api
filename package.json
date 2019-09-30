@@ -1,0 +1,16 @@
+{
+  "author": "yungkittty",
+  "name": "twitch-chatbot-popcorn-api",
+  "version": "0.9.0-alpha",
+  "engines": {
+    "node": "10.x"
+  },
+  "main": "./src/index.js",
+  "scripts": {},
+  "dependencies": {
+    "express": "^4.17.1",
+    "lodash": "^4.17.15",
+    "tmi.js": "^1.5.0",
+    "uuid": "^3.3.3"
+  }
+}

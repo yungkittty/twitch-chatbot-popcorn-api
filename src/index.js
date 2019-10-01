@@ -2,6 +2,12 @@ const express = require("express");
 
 const app = express();
 
+app.use((request, response, next) => {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Methods", "POST,GET,PATCH,DELETE,OPTIONS");
+  next();
+});
+
 app.use(express.json());
 
 const { postWatcher, patchWatcher } = require("./routes/watchers");

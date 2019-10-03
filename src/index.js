@@ -14,6 +14,8 @@ const { postWatcher, patchWatcher } = require("./routes/watchers");
 
 app.post("/api/watchers/:userId", postWatcher);
 
+// app.get("/api/watchers/:watcherId", getWatcher);
+
 app.patch("/api/watchers/:watcherId", patchWatcher);
 
 // app.delete("/api/watchers/:watcherId");

@@ -8,11 +8,11 @@ app.use(cors());
 
 app.use(express.json());
 
-const { postWatcher, patchWatcher } = require("./routes/watchers");
+const { postWatcher, getWatcher, patchWatcher } = require("./routes/watchers");
 
 app.post("/api/watchers/:userId", postWatcher);
 
-// app.get("/api/watchers/:watcherId", getWatcher);
+app.get("/api/watchers/:watcherId", getWatcher);
 
 app.patch("/api/watchers/:watcherId", patchWatcher);
 

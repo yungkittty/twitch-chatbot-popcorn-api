@@ -13,7 +13,7 @@ const patchWatcher = (request, response) => {
   if (status !== undefined && typeof status !== "boolean")
     // eslint-disable-line
     return response.status(400).end();
-  if (words !== undefined && typeof words !== "number" && words > 1)
+  if (words !== undefined && typeof words !== "number" && words < 1)
     // eslint-disable-line
     return response.status(400).end();
   const watcher = appDatabase.watchers[watcherId];

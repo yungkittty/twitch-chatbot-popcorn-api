@@ -8,6 +8,8 @@ let workerClient = undefined;
 
 let workerEmitter = undefined;
 
+let workerWords = undefined;
+
 let workerMessagesQueue = [];
 
 const onWorkerClientConnected = () =>
@@ -29,7 +31,7 @@ const onWorkerClientMessage = (
       .trim()
       .split(" ")
       .value();
-  if (workerClientMessageSplit.length > 2) return;
+  if (workerClientMessageSplit.length > workerWords) return;
   const workerClientMessageDeburr =
     // eslint-disable-line
     _.chain(workerClientMessageSplit)
@@ -48,10 +50,15 @@ const onWorkerClientMessage = (
 process.on("message", ({ type, payload }) => {
   switch (type) {
     case "worker-init":
-      workerClient = new tmi.client({ identity: payload, channels: [payload.username] });
+      workerClient = new tmi.client({ identity: payload.watcherCreds, channels: [payload.watcherCreds.username] });
       workerClient.on("connected", onWorkerClientConnected);
       workerClient.on("message", onWorkerClientMessage);
-      console.log("[INFO] Worker is initialising!");
+      workerWords = payload.watcherWords;
+      console.log(`[INFO] Worker is initialising w/ ${workerWords} word(s)! `);
+      return;
+    case "worker-update-words":
+      workerWords = payload.watcherWords;
+      console.log(`[INFO] Worker is updating to ${workerWords} word(s)!`);
       return;
     case "worker-start":
       workerClient.connect();
@@ -66,7 +73,6 @@ process.on("message", ({ type, payload }) => {
     case "worker-stop":
       workerClient.disconnect();
       clearInterval(workerEmitter);
-      workerMessagesQueue = [];
       console.log("[INFO] Worker is stopping!");
       return;
   }

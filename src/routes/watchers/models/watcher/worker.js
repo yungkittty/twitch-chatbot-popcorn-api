@@ -8,64 +8,65 @@ let workerClient = undefined;
 
 let workerEmitter = undefined;
 
-let workerWords = undefined;
+let workerMsgsQueue = [];
 
-let workerMessagesQueue = [];
+let workerMsgsQueueWords = undefined;
 
 const onWorkerClientConnected = () =>
   // eslint-disable-line
   console.log("[INFO] Worker is connected!");
 
-const onWorkerClientMessage = (
+const onWorkerClientMsg = (
   // eslint-disable-line
   workerClientTarget,
   workerClientContext,
-  workerClientMessage,
+  workerClientMsg,
   workerClientSelf
 ) => {
   if (workerClientSelf) return;
-  const workerClientMessageSplit =
+  const workerClientMsgSplit =
     // eslint-disable-line
-    _.chain(workerClientMessage)
+    _.chain(workerClientMsg)
       .replace(/\s+/g, " ")
       .trim()
       .split(" ")
       .value();
-  if (workerClientMessageSplit.length > workerWords) return;
-  const workerClientMessageDeburr =
+  if (workerClientMsgSplit.length > workerMsgsQueueWords) return;
+  const workerClientMsgDeburr =
     // eslint-disable-line
-    _.chain(workerClientMessageSplit)
+    _.chain(workerClientMsgSplit)
       .join(" ")
       .lowerCase()
       .deburr()
       .value();
-  const workerMessageData = workerClientMessageDeburr;
-  const workerMessage = new Message(workerMessageData);
-  workerMessagesQueue.push(workerMessage);
-  console.log(`[INFO] workerMessage = ${JSON.stringify(workerMessage)}.`);
-  console.log(`[INFO] workerMessageData = ${workerMessageData}.`);
-  console.log(`[INFO] workerMessagesQueue = ${JSON.stringify(workerMessagesQueue)}.`);
+  const workerMsgData = workerClientMsgDeburr;
+  const workerMsg = new Message(workerMsgData);
+  workerMsgsQueue.push(workerMsg);
+  console.log(`[INFO] workerMsg = ${JSON.stringify(workerMsg)}.`);
+  console.log(`[INFO] workerMsgData = ${workerMsgData}.`);
+  console.log(`[INFO] workerMsgsQueue = ${JSON.stringify(workerMsgsQueue)}.`);
 };
 
 process.on("message", ({ type, payload }) => {
   switch (type) {
     case "worker-init":
-      workerClient = new tmi.client({ identity: payload.watcherCreds, channels: [payload.watcherCreds.username] });
+      const workerClientParams = { identity: payload.watcherCreds, channels: [payload.watcherCreds.username] };
+      workerClient = new tmi.client(workerClientParams);
       workerClient.on("connected", onWorkerClientConnected);
-      workerClient.on("message", onWorkerClientMessage);
-      workerWords = payload.watcherWords;
-      console.log(`[INFO] Worker is initialising w/ ${workerWords} word(s)! `);
+      workerClient.on("message", onWorkerClientMsg);
+      workerMsgsQueueWords = payload.watcherMessagesWords;
+      console.log(`[INFO] Worker is initialising w/ ${workerMsgsQueueWords} word(s)! `);
       return;
     case "worker-update-words":
-      workerWords = payload.watcherWords;
-      console.log(`[INFO] Worker is updating to ${workerWords} word(s)!`);
+      workerMsgsQueueWords = payload.watcherMessagesWords;
+      console.log(`[INFO] Worker is updating to ${workerMsgsQueueWords} word(s)!`);
       return;
     case "worker-start":
       workerClient.connect();
       workerEmitter = setInterval(() => {
-        if (!workerMessagesQueue.length) return;
-        process.send({ payload: workerMessagesQueue });
-        workerMessagesQueue = [];
+        if (!workerMsgsQueue.length) return;
+        process.send({ payload: workerMsgsQueue });
+        workerMsgsQueue = [];
         console.log("[INFO] Worker is flushing!");
       }, WORKER_TICK_RATE);
       console.log("[INFO] Worker is starting!");

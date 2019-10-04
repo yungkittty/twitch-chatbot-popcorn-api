@@ -15,7 +15,8 @@ const getWatcher = (request, response) => {
       // eslint-disable-line
       "id",
       "status",
-      "words"
+      "messagesWords",
+      "messagesAt"
     ])
   );
 };

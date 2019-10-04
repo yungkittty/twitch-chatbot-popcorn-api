@@ -1,6 +1,6 @@
 const appDatabase = require("../../../../configurations/app-database");
 
-const deleteMessages = (request, response) => {
+const deleteMetrics = (request, response) => {
   const { watcherId } = request.params || {};
   if (!watcherId)
     // eslint-disable-line
@@ -10,7 +10,8 @@ const deleteMessages = (request, response) => {
     return response.status(404).end();
   const watcher = appDatabase.watchers[watcherId];
   watcher.messages = [];
+  watcher.messagesAt = null;
   return response.status(200).end();
 };
 
-module.exports = deleteMessages;
+module.exports = deleteMetrics;

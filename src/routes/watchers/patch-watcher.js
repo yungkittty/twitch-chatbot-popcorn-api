@@ -9,26 +9,27 @@ const patchWatcher = (request, response) => {
   if (!appDatabase.watchers[watcherId])
     // eslint-disable-line
     return response.status(404).end();
-  const { status, words } = request.body || {};
+  const { status, messagesWords } = request.body || {};
   if (status !== undefined && typeof status !== "boolean")
     // eslint-disable-line
     return response.status(400).end();
-  if (words !== undefined && typeof words !== "number" && words < 1)
+  if (messagesWords !== undefined && (typeof messagesWords !== "number" || messagesWords < 1))
     // eslint-disable-line
     return response.status(400).end();
   const watcher = appDatabase.watchers[watcherId];
   if (status !== undefined && status !== watcher.status)
     // eslint-disable-line
     watcher.setStatus(status);
-  if (words !== undefined && words !== watcher.words)
+  if (messagesWords !== undefined && messagesWords !== watcher.messagesWords)
     // eslint-disable-line
-    watcher.setWords(words);
+    watcher.setMessagesWords(messagesWords);
   return response.status(200).json(
     _.pick(watcher, [
       // eslint-disable-line
       "id",
       "status",
-      "words"
+      "messagesWords",
+      "messagesAt"
     ])
   );
 };

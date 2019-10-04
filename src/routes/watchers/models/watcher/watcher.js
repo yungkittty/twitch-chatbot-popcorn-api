@@ -5,10 +5,11 @@ class Watcher {
   constructor(watcherId, watcherCreds) {
     this.id = watcherId;
     this.status = false;
-    this.words = 3;
     this.messages = [];
+    this.messagesWords = 3;
+    this.messagesAt = null;
     this.worker = fork("./src/routes/watchers/models/watcher/worker.js");
-    const workerParams = { watcherCreds, watcherWords: this.words };
+    const workerParams = { watcherCreds, watcherMessagesWords: this.messagesWords };
     this.worker.send({ type: "worker-init", payload: workerParams });
     this.worker.on("message", ({ payload: workerMessagesQueue }) => {
       this.messages = _.concat(this.messages, workerMessagesQueue);
@@ -20,6 +21,7 @@ class Watcher {
   setStatus(status) {
     this.status = status;
     if (status) {
+      if (_.isEmpty(this.messages)) this.messagesAt = Date.now();
       this.worker.send({ type: "worker-start" });
       console.log("[INFO] Watcher is starting!");
     } else {
@@ -28,11 +30,11 @@ class Watcher {
     }
   }
 
-  setWords(words) {
-    this.words = words;
-    const workerParams = { watcherWords: this.words };
+  setMessagesWords(messagesWords) {
+    this.messagesWords = messagesWords;
+    const workerParams = { watcherMessagesWords: this.messagesWords };
     this.worker.send({ type: "worker-update-words", payload: workerParams });
-    console.log(`[INFO] Watcher is updating to ${this.words} word(s)!`);
+    console.log(`[INFO] Watcher is updating to ${this.messagesWords} word(s)!`);
   }
 }
 
